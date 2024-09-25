@@ -108,7 +108,7 @@ def get_empty_profile():
     return {
         "meta": {
             "interval": 1,
-            "startTime": int(time.time() * 1000),
+            "startTime": time.time() * 1000.0,
             "abi": "",
             "misc": "",
             "oscpu": "",
@@ -268,17 +268,17 @@ def get_task_schema():
 Profile = dict[str, Any]
 
 
-def get_timestamp_ms(dt: datetime):
-    return int(dt.timestamp() * 1000.0)
+def get_timestamp_ms(dt: datetime) -> float:
+    return dt.timestamp() * 1000.0
 
 
 def build_profile(buffer: list[Tuple[datetime, str]]) -> Profile:
     profile = get_empty_profile()
 
-    # Compute and save the profilel start time.
-    profile_start_time = 0
-    for dt, _line in buffer:
-        profile_start_time = get_timestamp_ms(dt)
+    # Compute and save the profile start time.
+    profile_start_time = 0.0
+    if buffer:
+        profile_start_time = get_timestamp_ms(buffer[0][0])
         profile["meta"]["startTime"] = profile_start_time
 
     # Create the thread that we'll attach the markers to.
